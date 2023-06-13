@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  backend:
+    build: ./
+    command: ['httpd-foreground']
+    depends_on:
+      - db
+    links:
+      - db
+    networks:
+      - test_coavi
+    ports:
+      - 8080:80
+    volumes:
+      - ./src:/var/www/lamp-demo
+
+  db:
+    container_name: test_coavi_db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    image: 'mysql:5.7'
+    networks:
+      - test_coavi
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data_57:/var/lib/mysql
+
+
+networks:
+  test_coavi:
+    external: true
+
+volumes:
+  mysql_data_57:
+    external: true
